@@ -8,7 +8,7 @@
         /* CSS RESET & FONTS */
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap');
         
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
         
         body {
             font-family: 'Nunito', sans-serif;
@@ -55,34 +55,38 @@
         input[type="text"] {
             font-size: 1.5rem; font-family: 'Fredoka One', cursive; padding: 15px; border-radius: 15px;
             border: 3px solid #4ecdc4; text-align: center; width: 80%; max-width: 400px;
-            background: rgba(255,255,255,0.8); color: #333; outline: none; transition: 0.3s;
+            background: rgba(255,255,255,0.9); color: #333; outline: none; transition: 0.3s;
         }
         input[type="text"]:focus { transform: scale(1.05); box-shadow: 0 10px 20px rgba(78,205,196,0.3); }
         
         .btn {
             font-family: 'Fredoka One', cursive; font-size: 1.8rem; padding: 15px 40px;
-            border: none; border-radius: 20px; cursor: pointer; transition: all 0.2s;
+            border: none; border-radius: 20px; cursor: pointer; transition: all 0.1s;
             box-shadow: 0 8px 0 rgba(0,0,0,0.15); margin: 15px; text-transform: uppercase;
         }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
         .btn:active { transform: translateY(8px); box-shadow: 0 0px 0 rgba(0,0,0,0.15); }
+        
         .btn-start { background: #ffe66d; color: #d35400; border: 3px solid #fff; }
-        .btn-start:hover { background: #ffd000; }
-        .btn-next { background: #4ecdc4; color: #fff; }
+        .btn-next { background: #4ecdc4; color: #fff; border: 3px solid #fff; }
+        
         .btn-mute, .btn-fullscreen {
-            position: absolute; top: 15px; background: rgba(255,255,255,0.7);
+            position: absolute; top: 15px; background: rgba(255,255,255,0.9);
             border: none; font-size: 1.5rem; width: 50px; height: 50px; border-radius: 50%;
-            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 10;
+            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 10; transition: 0.2s;
         }
+        .btn-mute:hover, .btn-fullscreen:hover { transform: scale(1.1); }
         .btn-mute { right: 15px; }
         .btn-fullscreen { right: 75px; }
 
         /* HEADER & STATS */
         .header-stats {
             display: flex; justify-content: space-between; align-items: flex-end;
-            background: rgba(255,255,255,0.5); padding: 15px 25px; border-radius: 25px;
+            background: rgba(255,255,255,0.6); padding: 15px 25px; border-radius: 25px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.05); margin-bottom: 20px;
         }
-        .team-stat { text-align: center; width: 45%; }
+        .team-stat { text-align: center; width: 45%; transition: opacity 0.3s; }
+        .team-dead { opacity: 0.4; filter: grayscale(1); pointer-events: none; }
         .team-name { font-family: 'Fredoka One', cursive; font-size: 1.8rem; margin-bottom: 5px; }
         .t1-color { color: #ff6b6b; } .t2-color { color: #4ecdc4; }
         .score-box { background: #fff; border-radius: 15px; padding: 10px; font-weight: 900; font-size: 1.5rem; box-shadow: inset 0 3px 5px rgba(0,0,0,0.1); }
@@ -91,7 +95,7 @@
         .level-badge {
             font-family: 'Fredoka One', cursive; background: #ffe66d; color: #d35400;
             padding: 5px 15px; border-radius: 20px; font-size: 1.2rem;
-            position: absolute; top: 15px; left: 15px;
+            position: absolute; top: 15px; left: 15px; font-weight: bold;
         }
 
         /* TIMER & QUESTION */
@@ -103,14 +107,15 @@
             color: #333; box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: border-color 0.3s;
         }
         .timer-warning { border-color: #ffe66d; color: #d35400; }
-        .timer-danger { border-color: #ff6b6b; color: #ff6b6b; animation: pulse 0.5s infinite alternate; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
+        .timer-danger { border-color: #ff6b6b; color: #ff6b6b; animation: timerPulse 0.5s infinite alternate; }
+        @keyframes timerPulse { from { transform: scale(1); } to { transform: scale(1.1); } }
         
         .status-text {
             text-align: center; font-family: 'Fredoka One', cursive; font-size: 1.8rem;
-            color: #d35400; background: #ffe66d; padding: 10px; border-radius: 15px;
-            margin: 10px auto; width: fit-content; min-width: 300px;
+            color: #fff; background: #ff6b6b; padding: 10px 20px; border-radius: 15px;
+            margin: 10px auto; width: fit-content; min-width: 300px; animation: bounceIn 0.5s;
         }
+        @keyframes bounceIn { 0% { transform: scale(0); } 80% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
         .question-box {
             background: #fff; padding: 25px; border-radius: 20px; font-size: 1.7rem;
@@ -123,45 +128,53 @@
         .buzzer-area { display: flex; justify-content: space-around; margin-top: 20px; }
         .buzzer {
             width: 200px; height: 200px; border-radius: 50%; border: none;
-            font-family: 'Fredoka One', cursive; font-size: 2rem; color: white;
-            cursor: pointer; position: relative; box-shadow: 0 15px 0 rgba(0,0,0,0.2), 0 25px 30px rgba(0,0,0,0.3);
+            font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: white;
+            cursor: pointer; position: relative; 
+            box-shadow: 0 15px 0 rgba(0,0,0,0.3), 0 25px 30px rgba(0,0,0,0.4);
             transition: all 0.1s; text-transform: uppercase;
+            animation: pulseBuzzer 1.5s infinite;
         }
-        .buzzer:active { transform: translateY(15px); box-shadow: 0 0px 0 rgba(0,0,0,0.2), 0 5px 10px rgba(0,0,0,0.3); }
-        .buzzer-t1 { background: linear-gradient(145deg, #ff8787, #fa5252); }
-        .buzzer-t2 { background: linear-gradient(145deg, #63e6be, #20c997); }
-        .buzzer-hint { font-size: 1rem; opacity: 0.8; margin-top: 5px; font-family: 'Nunito', sans-serif;}
+        @keyframes pulseBuzzer { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .buzzer:active { transform: translateY(15px) !important; box-shadow: 0 0px 0 rgba(0,0,0,0.3), 0 5px 10px rgba(0,0,0,0.4) !important; animation: none; }
+        .buzzer-t1 { background: radial-gradient(circle, #ff6b6b, #c0392b); }
+        .buzzer-t2 { background: radial-gradient(circle, #4ecdc4, #16a085); }
+        .buzzer-hint { font-size: 1.1rem; opacity: 0.9; margin-top: 5px; font-family: 'Nunito', sans-serif;}
 
         /* OPTIONS */
         .options-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-            pointer-events: none; opacity: 0.5; filter: blur(3px); transition: all 0.3s;
+            pointer-events: none; opacity: 0.4; filter: blur(4px); transition: all 0.3s ease;
         }
         .options-grid.active { pointer-events: auto; opacity: 1; filter: blur(0); }
         
         .opt-btn {
-            background: #fff; border: 3px solid #e9ecef; border-radius: 15px;
-            padding: 15px; font-size: 1.25rem; font-weight: 700; cursor: pointer;
-            text-align: left; transition: all 0.2s; color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            background: #fff; border: 4px solid #e9ecef; border-radius: 15px;
+            padding: 15px; font-size: 1.3rem; font-weight: 700; cursor: pointer;
+            text-align: left; transition: all 0.1s; color: #333; box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
-        .opt-btn:hover { border-color: #4ecdc4; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(78,205,196,0.2); }
-        .opt-btn.correct { background: #d4edda; border-color: #28a745; color: #155724; }
-        .opt-btn.wrong { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+        .opt-btn:hover { border-color: #4ecdc4; transform: translateY(-3px); }
+        .opt-btn:active { transform: translateY(4px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .opt-btn.correct { background: #d4edda; border-color: #28a745; color: #155724; animation: flashGreen 0.5s; }
+        .opt-btn.wrong { background: #f8d7da; border-color: #dc3545; color: #721c24; animation: shake 0.4s; }
+        
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }
+        @keyframes flashGreen { 0%, 100% {background: #d4edda;} 50% {background: #28a745; color: #fff;} }
 
         /* OVERLAY / FEEDBACK */
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.9); z-index: 100; display: none;
+            background: rgba(255,255,255,0.95); z-index: 100; display: none;
             flex-direction: column; justify-content: center; align-items: center;
             text-align: center; padding: 30px; border-radius: 30px;
         }
-        .overlay h1 { font-size: 4rem; margin-bottom: 10px; }
-        .overlay .explanation { font-size: 1.4rem; background: #fff; padding: 20px; border-radius: 15px; border: 2px dashed #4ecdc4; margin: 20px 0; font-weight: bold; max-width: 80%; }
+        .overlay h1 { font-size: 4.5rem; margin-bottom: 10px; text-transform: uppercase; }
+        .overlay .explanation { font-size: 1.5rem; background: #fff; padding: 20px; border-radius: 15px; border: 3px dashed #4ecdc4; margin: 20px 0; font-weight: bold; max-width: 80%; line-height: 1.5;}
         
         /* LEVEL INTRO SCREEN */
         .level-intro { text-align: center; justify-content: center; align-items: center;}
         .level-intro h1 { font-size: 5rem; }
-        .level-intro p { font-size: 2rem; font-weight: bold; color: #fff; background: #ff6b6b; padding: 10px 30px; border-radius: 20px; margin-top: 10px;}
+        .level-intro p.topic { font-size: 2.2rem; font-weight: bold; color: #fff; background: #ff6b6b; padding: 10px 40px; border-radius: 20px; margin-top: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);}
+        .level-intro p.msg { font-size: 1.5rem; margin-top: 20px; color:#fff; padding:10px 20px; border-radius:15px; }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -169,9 +182,9 @@
             h1 { font-size: 2.5rem; }
             .header-stats { flex-direction: column; align-items: center; }
             .team-stat { width: 100%; margin-bottom: 15px; }
-            .buzzer { width: 140px; height: 140px; font-size: 1.5rem; }
+            .buzzer { width: 150px; height: 150px; font-size: 1.5rem; }
             .btn-fullscreen { right: 15px; top: 75px; }
-            .question-box { font-size: 1.3rem; padding: 15px;}
+            .question-box { font-size: 1.4rem; padding: 15px;}
         }
     </style>
 </head>
@@ -188,10 +201,11 @@
             <h1>PETUALANGAN GAYA</h1>
             <h2>Kuis Rebutan Sains - Kelas 4 SD</h2>
             
-            <div style="background:rgba(255,255,255,0.7); padding: 20px; border-radius: 20px; text-align:center; font-weight: bold; font-size: 1.2rem; margin-bottom: 20px;">
-                <p>Materi: Penyelidikan Gaya Gesek & Magnet</p>
-                <p style="color:#d35400; margin-top:5px;">3 LEVEL • 30 SOAL • 5 NYAWA</p>
-                <p style="font-size:1rem; margin-top:10px;">Tekan 'Q' (Tim Kiri) atau 'P' (Tim Kanan) pada Keyboard untuk Bel.</p>
+            <div style="background:rgba(255,255,255,0.8); padding: 15px; border-radius: 20px; text-align:center; font-weight: bold; font-size: 1.1rem; margin-bottom: 20px; line-height: 1.4; border: 2px solid #fff;">
+                <p>3 LEVEL • 30 SOAL • REBUTAN TEPAT</p>
+                <p style="color:#d35400; margin-top:5px;">Nyawa (5) DIRESET PENUH setiap naik level. Skor diakumulasi!</p>
+                <p style="color:#d35400;">Tim yang kehabisan nyawa akan gugur di level tersebut.<br>Tekan BEL secepatnya saat soal muncul!</p>
+                <p style="font-size:0.9rem; margin-top:10px; color:#666;">Bisa ditekan langsung di layar (Touch) atau pakai Keyboard 'Q' & 'P'</p>
             </div>
 
             <div class="input-group">
@@ -208,14 +222,15 @@
         <!-- SCREEN: LEVEL INTRO -->
         <div id="screen-level-intro" class="screen level-intro">
             <h1 id="level-title-big">LEVEL 1</h1>
-            <p id="level-topic-big">GAYA GESEK</p>
-            <button class="btn btn-start" onclick="nextQuestion()">LANJUT</button>
+            <p id="level-topic-big" class="topic">GAYA GESEK</p>
+            <p id="level-msg-big" class="msg" style="background: #4ecdc4;">Nyawa Kedua Tim Direset ke 5 ❤️</p>
+            <button class="btn btn-start" style="margin-top:30px;" onclick="nextQuestion()">LANJUT KE SOAL</button>
         </div>
 
         <!-- SCREEN: KUIS -->
         <div id="screen-quiz" class="screen">
             <div class="header-stats">
-                <div class="team-stat">
+                <div class="team-stat" id="stat-t1">
                     <div class="team-name t1-color" id="name-t1">TIM 1</div>
                     <div class="score-box">Skor: <span id="score-t1">0</span></div>
                     <div class="hearts" id="hearts-t1">❤️❤️❤️❤️❤️</div>
@@ -223,21 +238,22 @@
                 <div class="timer-container">
                     <div class="timer-circle" id="timer-display">20</div>
                 </div>
-                <div class="team-stat">
+                <div class="team-stat" id="stat-t2">
                     <div class="team-name t2-color" id="name-t2">TIM 2</div>
                     <div class="score-box">Skor: <span id="score-t2">0</span></div>
                     <div class="hearts" id="hearts-t2">❤️❤️❤️❤️❤️</div>
                 </div>
             </div>
 
-            <div class="status-text" id="game-status">SIAP-SIAP REBUTAN!</div>
+            <div class="status-text" id="game-status" style="background: #ffe66d; color:#d35400;">SIAP-SIAP REBUTAN!</div>
 
             <div class="question-box" id="question-text">Memuat pertanyaan...</div>
 
             <!-- AREA BEL REBUTAN -->
             <div id="buzzer-container" class="buzzer-area">
-                <button class="buzzer buzzer-t1" onclick="hitBuzzer(1)">BEL TIM KIRI<br><span class="buzzer-hint">(Tekan Q)</span></button>
-                <button class="buzzer buzzer-t2" onclick="hitBuzzer(2)">BEL TIM KANAN<br><span class="buzzer-hint">(Tekan P)</span></button>
+                <!-- Menggunakan onmousedown dan ontouchstart agar responsif di IFP layar sentuh -->
+                <button class="buzzer buzzer-t1" id="btn-buzzer-1" onmousedown="hitBuzzer(1, event)" ontouchstart="hitBuzzer(1, event)">BEL TIM KIRI<br><span class="buzzer-hint">(Tekan Q)</span></button>
+                <button class="buzzer buzzer-t2" id="btn-buzzer-2" onmousedown="hitBuzzer(2, event)" ontouchstart="hitBuzzer(2, event)">BEL TIM KANAN<br><span class="buzzer-hint">(Tekan P)</span></button>
             </div>
 
             <!-- PILIHAN GANDA -->
@@ -254,7 +270,7 @@
             <h1 id="overlay-title">BENAR!</h1>
             <h2 id="overlay-subtitle" style="color:#333;">+100 Poin untuk Tim Merah</h2>
             <div class="explanation" id="overlay-explanation">Penjelasan singkat di sini.</div>
-            <button class="btn btn-next" onclick="nextQuestion()">SOAL BERIKUTNYA</button>
+            <button class="btn btn-next" onclick="nextQuestion()">LANJUTKAN</button>
         </div>
 
         <!-- SCREEN: HASIL AKHIR -->
@@ -265,49 +281,44 @@
             <div class="header-stats" style="justify-content: space-around; background:none; box-shadow:none; margin-top:20px;">
                 <div class="team-stat" style="background:#fff; padding:20px; border-radius:20px; box-shadow:0 10px 20px rgba(0,0,0,0.1);">
                     <div class="team-name t1-color" id="final-name-t1">TIM 1</div>
-                    <h2 style="color:#333; margin:10px 0;">Skor: <span id="final-score-t1">0</span></h2>
-                    <div id="final-hearts-t1" style="font-size:1.5rem;">❤️❤️❤️❤️❤️</div>
+                    <h2 style="color:#333; margin:10px 0;">Skor Akhir: <span id="final-score-t1">0</span></h2>
                 </div>
                 <div class="team-stat" style="background:#fff; padding:20px; border-radius:20px; box-shadow:0 10px 20px rgba(0,0,0,0.1);">
                     <div class="team-name t2-color" id="final-name-t2">TIM 2</div>
-                    <h2 style="color:#333; margin:10px 0;">Skor: <span id="final-score-t2">0</span></h2>
-                    <div id="final-hearts-t2" style="font-size:1.5rem;">❤️❤️❤️❤️❤️</div>
+                    <h2 style="color:#333; margin:10px 0;">Skor Akhir: <span id="final-score-t2">0</span></h2>
                 </div>
             </div>
             
-            <button class="btn btn-start" onclick="location.reload()" style="margin-top: 30px;">MAIN LAGI</button>
+            <button class="btn btn-start" onclick="location.reload()" style="margin-top: 30px;">MAIN LAGI DARI AWAL</button>
         </div>
     </div>
 
 <script>
 // ==========================================
-// AUDIO SYSTEM (Web Audio API) - 8-BIT ARCADE THEME
+// ROBUST AUDIO ENGINE (Web Audio API)
 // ==========================================
-const AudioContext = window.AudioContext || window.webkitAudioContext;
 let audioCtx;
 let isMuted = false;
 let bgmInterval = null;
 
-// Melodi 8-bit ceria ala Game Petualangan / Platformer
+// Melodi 8-bit Arcade / Platformer
 const melodyNotes = [
-    523.25, 0,      659.25, 0,      783.99, 659.25, 523.25, 0,      // C, E, G, E, C
-    659.25, 0,      783.99, 0,      1046.50, 783.99, 659.25, 0,     // E, G, C6, G, E
-    587.33, 0,      698.46, 0,      880.00, 698.46, 587.33, 0,      // D, F, A, F, D
-    783.99, 698.46, 659.25, 587.33, 523.25, 0,      0,      0       // G, F, E, D, C (rest)
+    523.25, 0, 659.25, 0, 783.99, 659.25, 523.25, 0,
+    659.25, 0, 783.99, 0, 1046.50, 783.99, 659.25, 0,
+    587.33, 0, 698.46, 0, 880.00, 698.46, 587.33, 0,
+    783.99, 698.46, 659.25, 587.33, 523.25, 0, 0, 0
 ];
-
-// Bass pengiring agar lebih seru
 const bassNotes = [
     130.81, 0, 196.00, 0, 130.81, 0, 196.00, 0,
     164.81, 0, 196.00, 0, 164.81, 0, 196.00, 0,
     146.83, 0, 220.00, 0, 146.83, 0, 220.00, 0,
     98.00,  0, 146.83, 0, 130.81, 0, 196.00, 0
 ];
-
 let beatIndex = 0;
 
 function initAudio() {
     if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
         audioCtx = new AudioContext();
     }
     if (audioCtx.state === 'suspended') {
@@ -317,36 +328,34 @@ function initAudio() {
 
 function playTone(freq, type, duration, vol=0.1) {
     if(isMuted || !audioCtx || freq === 0) return;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    
-    // Envelope agar suaranya asyik seperti gimbot
-    gain.gain.setValueAtTime(0, audioCtx.currentTime);
-    gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.03);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + duration);
+    try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gain.gain.setValueAtTime(0, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    } catch(e) { console.error("Audio error", e); }
 }
 
 function startBGM() {
-    if(bgmInterval) return; // Mencegah musik dobel
+    if(bgmInterval) return; 
     beatIndex = 0;
     
-    // Tempo dipercepat (200ms) agar lebih bersemangat!
     bgmInterval = setInterval(() => {
-        if(!isMuted && audioCtx) {
-            // Mainkan Melodi Utama (Square wave)
+        if(!isMuted && audioCtx && audioCtx.state === 'running') {
             let mFreq = melodyNotes[beatIndex % melodyNotes.length];
-            playTone(mFreq, 'square', 0.2, 0.05);
+            playTone(mFreq, 'square', 0.2, 0.04);
             
-            // Mainkan Nada Bass (Triangle wave)
             let bFreq = bassNotes[beatIndex % bassNotes.length];
-            playTone(bFreq, 'triangle', 0.25, 0.08);
+            playTone(bFreq, 'triangle', 0.25, 0.07);
             
             beatIndex++;
         }
@@ -360,19 +369,29 @@ function stopBGM() {
     }
 }
 
-// Sound Effects
+// Koleksi Sound Effects
 const SFX = {
-    buzzer: () => { playTone(300, 'sawtooth', 0.5, 0.2); playTone(310, 'square', 0.5, 0.2); },
+    click: () => playTone(800, 'sine', 0.05, 0.05),
+    buzzer: () => { playTone(300, 'sawtooth', 0.6, 0.3); playTone(305, 'square', 0.6, 0.3); },
     correct: () => { playTone(523.25, 'square', 0.1, 0.1); setTimeout(()=>playTone(659.25, 'square', 0.1, 0.1), 100); setTimeout(()=>playTone(783.99, 'square', 0.3, 0.15), 200); },
-    wrong: () => { playTone(200, 'sawtooth', 0.3, 0.15); setTimeout(()=>playTone(150, 'sawtooth', 0.5, 0.15), 250); },
-    timeout: () => { playTone(100, 'square', 0.8, 0.2); },
-    tick: () => { playTone(800, 'sine', 0.05, 0.05); }
+    wrong: () => { playTone(200, 'sawtooth', 0.3, 0.2); setTimeout(()=>playTone(150, 'sawtooth', 0.5, 0.2), 250); },
+    timeout: () => playTone(100, 'square', 0.8, 0.2),
+    tick: () => playTone(1000, 'sine', 0.03, 0.03),
+    levelup: () => { playTone(523.25, 'triangle', 0.1, 0.1); setTimeout(()=>playTone(783.99, 'triangle', 0.1, 0.1), 150); setTimeout(()=>playTone(1046.50, 'triangle', 0.4, 0.1), 300); }
 };
 
+// Tambahkan event listener untuk memutar klik di semua tombol berkelas .btn
+document.addEventListener('click', function(e) {
+    if(e.target.closest('.btn')) {
+        initAudio();
+        SFX.click();
+    }
+});
+
 function toggleMute() {
+    initAudio();
     isMuted = !isMuted;
     document.getElementById('mute-btn').innerText = isMuted ? '🔇' : '🔊';
-    initAudio();
 }
 
 function toggleFullscreen() {
@@ -388,12 +407,11 @@ function toggleFullscreen() {
     }
 }
 
-
 // ==========================================
-// DATA SOAL (Kelas 4 SD)
+// DATA SOAL (Kelas 4 SD - 3 Level x 10 Soal)
 // ==========================================
 const allQuestions = [
-    // LEVEL 1: GAYA GESEK (Soal 1-10)
+    // LEVEL 1: GAYA GESEK (Soal 0-9)
     { text: "Benda yang permukaannya sangat halus akan menghasilkan gaya gesek yang...", options: ["A. Sangat besar", "B. Kecil", "C. Semakin kuat", "D. Tidak menentu"], answer: 1, explanation: "Semakin halus permukaan benda, maka gaya gesek yang dihasilkan akan semakin kecil." },
     { text: "Bagian alas (sol) sepatu bola sepak dibuat tidak rata dan memiliki pul (tonjolan). Tujuannya agar...", options: ["A. Sepatu menjadi lebih ringan", "B. Gaya gesek mengecil", "C. Gaya gesek membesar sehingga tidak terpeleset", "D. Sepatu terlihat lebih bagus"], answer: 2, explanation: "Permukaan yang kasar dan menonjol sengaja dibuat untuk memperbesar gaya gesek agar pemain stabil." },
     { text: "Mengapa kelereng lebih mudah dan cepat menggelinding di atas lantai keramik dibandingkan di atas karpet?", options: ["A. Lantai keramik permukaannya halus sehingga gaya geseknya kecil", "B. Karpet memiliki gaya magnet", "C. Kelereng menjadi lebih berat saat di atas karpet", "D. Lantai keramik tidak memiliki gaya gravitasi"], answer: 0, explanation: "Lantai keramik yang licin menghambat gerakan kelereng lebih sedikit (gesekan kecil) dibandingkan karpet." },
@@ -405,7 +423,7 @@ const allQuestions = [
     { text: "Budi melihat ban sepeda motor ayahnya sudah sangat gundul (botak). Budi menyarankan ayahnya segera mengganti ban tersebut. Apakah saran Budi tepat?", options: ["A. Tidak tepat, ban gundul justru bikin motor melaju cepat", "B. Tepat, karena ban gundul sangat licin, gaya geseknya kecil dan berbahaya", "C. Tidak tepat, karena ban gundul menghemat bahan bakar", "D. Tepat, karena ban gundul bisa merusak aspal"], answer: 1, explanation: "Ban gundul kehilangan alurnya, sehingga gaya gesek mengecil. Ini sangat rawan tergelincir di jalan basah." },
     { text: "Siti meneliti balok yang ditarik di atas amplas dan kaca. Tarikan di amplas terasa berat. Kesimpulan yang tepat dari percobaan Siti adalah...", options: ["A. Semakin kasar permukaan benda, gaya gesek semakin kecil", "B. Semakin kasar permukaan benda, gaya gesek semakin besar", "C. Semua balok beratnya sama", "D. Gaya gesek tidak bergantung pada permukaan"], answer: 1, explanation: "Amplas kasar menghambat gerak balok, membuktikan permukaan kasar memperbesar gaya gesek." },
 
-    // LEVEL 2: GAYA MAGNET (Soal 11-20)
+    // LEVEL 2: GAYA MAGNET (Soal 10-19)
     { text: "Benda yang terbuat dari besi dan baja, yang dapat ditarik kuat oleh magnet disebut benda...", options: ["A. Benda elastis", "B. Benda ringan", "C. Benda magnetis", "D. Benda licin"], answer: 2, explanation: "Istilah untuk benda yang bisa dipengaruhi gaya magnet adalah benda magnetis." },
     { text: "Ujung-ujung pada magnet yang memiliki gaya tarik paling kuat disebut...", options: ["A. Kepala magnet", "B. Kutub magnet", "C. Pinggir magnet", "D. Badan magnet"], answer: 1, explanation: "Kekuatan terbesar sebuah magnet selalu terpusat di kedua ujungnya yang disebut kutub (Utara dan Selatan)." },
     { text: "Jika kutub Utara (U) sebuah magnet didekatkan dengan kutub Utara (U) magnet lain, yang akan terjadi adalah...", options: ["A. Saling menempel kuat", "B. Tolak-menolak (saling menjauh)", "C. Keluar bunga api", "D. Gaya magnetnya akan hilang seketika"], answer: 1, explanation: "Sifat dasar magnet: Kutub yang senama/sama (Utara dan Utara) akan saling tolak-menolak." },
@@ -417,7 +435,7 @@ const allQuestions = [
     { text: "Made berkata: \"Semua logam pasti menempel pada magnet\". Lalu ia mendekatkan koin emas dan tembaga, ternyata koin itu TIDAK menempel! Kesimpulan yang tepat adalah...", options: ["A. Made benar, magnetnya saja yang rusak", "B. Pernyataan Made salah, tidak semua jenis logam dapat ditarik magnet", "C. Emas dan tembaga adalah jenis plastik, bukan logam", "D. Koin tersebut harus dibasahi dulu agar menempel"], answer: 1, explanation: "Emas, tembaga, dan perak adalah logam murni namun bersifat non-magnetis (tidak ditarik magnet)." },
     { text: "Siti memiliki sebuah magnet batang lurus. Jika magnet itu tiba-tiba patah menjadi dua bagian di tengahnya, apa yang akan terjadi pada patahannya?", options: ["A. Menjadi dua magnet baru yang masing-masing punya kutub Utara & Selatan", "B. Gaya magnetnya langsung mati selamanya", "C. Satu potong hanya punya Kutub Utara, satu lagi hanya Selatan", "D. Berubah menjadi besi biasa tanpa magnet"], answer: 0, explanation: "Magnet yang patah akan selalu membentuk kutub baru secara otomatis di ujung patahannya." },
 
-    // LEVEL 3: CAMPURAN GAYA GESEK & MAGNET (Soal 21-30)
+    // LEVEL 3: CAMPURAN GAYA GESEK & MAGNET (Soal 20-29)
     { text: "Pintu lemari es (kulkas) di rumah kita dapat tertutup dengan rapat dengan sendirinya tanpa perlu diselot karena memanfaatkan gaya...", options: ["A. Gaya Gravitasi", "B. Gaya Gesek Karet", "C. Gaya Magnet pada pinggiran pintunya", "D. Gaya Pegas"], answer: 2, explanation: "Pinggiran pintu kulkas berlapis karet di dalamnya terdapat pita magnet pelentur panjang." },
     { text: "Mengapa tukang kayu menggunakan kain tebal (keset) di bawah lemari besi saat memindahkannya di atas lantai licin?", options: ["A. Untuk menambah berat lemari", "B. Untuk memperkecil gaya gesek lemari dengan lantai", "C. Agar lantai menjadi magnetis", "D. Agar lemarinya tidak kedinginan"], answer: 1, explanation: "Kain tebal/keset akan meluncur lebih mudah di lantai licin dibandingkan sudut lemari besi yang kasar." },
     { text: "Dalam percobaan labirin magnet, kamu harus menggerakkan koin logam dari bawah kertas karton tebal. Jika koin logam tidak mau bergerak, apa yang harus kamu perbaiki?", options: ["A. Menyiram koin dengan air pelumas", "B. Mengganti koin dengan penghapus", "C. Menggunakan magnet yang lebih kuat tarikannya", "D. Memutar-mutar kartonnya ke udara"], answer: 2, explanation: "Jika gaya magnet tak sanggup menembus karton tebal, solusinya adalah memakai karton lebih tipis atau magnet lebih kuat." },
@@ -456,11 +474,11 @@ const screens = {
     result: document.getElementById('screen-result')
 };
 
-// Keyboard listener
+// Deteksi Keyboard untuk Bel
 document.addEventListener('keydown', (e) => {
     if(screens.quiz.classList.contains('active') && currentPhase === "BUZZER") {
-        if(e.key.toLowerCase() === 'q') hitBuzzer(1);
-        if(e.key.toLowerCase() === 'p') hitBuzzer(2);
+        if(e.key.toLowerCase() === 'q' && teams[0].lives > 0) hitBuzzer(1, e);
+        if(e.key.toLowerCase() === 'p' && teams[1].lives > 0) hitBuzzer(2, e);
     }
 });
 
@@ -478,10 +496,17 @@ function updateHUD() {
     document.getElementById('score-t2').innerText = teams[1].score;
     document.getElementById('hearts-t2').innerText = getHearts(teams[1].lives);
 
+    if(teams[0].lives <= 0) document.getElementById('stat-t1').classList.add('team-dead');
+    else document.getElementById('stat-t1').classList.remove('team-dead');
+    
+    if(teams[1].lives <= 0) document.getElementById('stat-t2').classList.add('team-dead');
+    else document.getElementById('stat-t2').classList.remove('team-dead');
+
     document.getElementById('level-indicator').innerText = `LEVEL ${currentLevel} - Soal ${currentQIndex + 1}/30`;
 }
 
 function getHearts(lives) {
+    if(lives <= 0) return "💀 GUGUR";
     let html = "";
     for(let i=0; i<MAX_LIVES; i++) html += i < lives ? "❤️" : "🖤";
     return html;
@@ -496,32 +521,66 @@ function startGame() {
     if(n1) teams[0].name = n1.toUpperCase();
     if(n2) teams[1].name = n2.toUpperCase();
     
-    currentQIndex = 0;
-    teams[0].score = 0; teams[0].lives = MAX_LIVES;
-    teams[1].score = 0; teams[1].lives = MAX_LIVES;
+    teams[0].score = 0; 
+    teams[1].score = 0; 
     
-    showLevelIntro();
+    startLevel(1, false);
 }
 
-function showLevelIntro() {
-    if(currentQIndex == 0) { currentLevel = 1; document.getElementById('level-topic-big').innerText = "PENYELIDIKAN GAYA GESEK"; }
-    else if(currentQIndex == 10) { currentLevel = 2; document.getElementById('level-topic-big').innerText = "PENYELIDIKAN GAYA MAGNET"; }
-    else if(currentQIndex == 20) { currentLevel = 3; document.getElementById('level-topic-big').innerText = "CAMPURAN & ANALISIS"; }
+function startLevel(levelNum, bothDied) {
+    currentLevel = levelNum;
+    
+    // Logika nyawa berdasarkan instruksi jika KEDUANYA mati di level sebelumnya
+    if (bothDied) {
+        teams[0].lives = 2;
+        teams[1].lives = 2;
+        document.getElementById('level-msg-big').innerHTML = "KEDUA TIM GUGUR!<br>Diberikan 2 Nyawa Tambahan 💖💖";
+        document.getElementById('level-msg-big').style.background = "#d35400";
+    } else {
+        teams[0].lives = MAX_LIVES;
+        teams[1].lives = MAX_LIVES;
+        document.getElementById('level-msg-big').innerHTML = "Nyawa Direset Penuh ❤️❤️❤️❤️❤️";
+        document.getElementById('level-msg-big').style.background = "#4ecdc4";
+    }
+    
+    if (levelNum === 1) currentQIndex = 0;
+    else if (levelNum === 2) currentQIndex = 10;
+    else if (levelNum === 3) currentQIndex = 20;
+
+    if(levelNum === 1) document.getElementById('level-topic-big').innerText = "PENYELIDIKAN GAYA GESEK";
+    else if(levelNum === 2) document.getElementById('level-topic-big').innerText = "PENYELIDIKAN GAYA MAGNET";
+    else if(levelNum === 3) document.getElementById('level-topic-big').innerText = "CAMPURAN & ANALISIS";
     
     document.getElementById('level-title-big').innerText = `LEVEL ${currentLevel}`;
     showScreen('levelIntro');
-    SFX.correct();
+    SFX.levelup();
 }
 
 function nextQuestion() {
+    initAudio();
     document.getElementById('overlay').style.display = 'none';
     
-    if(teams[0].lives <= 0 || teams[1].lives <= 0) { endGame(); return; }
+    // Jika KEDUA TIM GUGUR, beri 2 nyawa dan langsung loncat ke level berikutnya
+    if (teams[0].lives <= 0 && teams[1].lives <= 0) {
+        if (currentLevel === 1) { startLevel(2, true); return; }
+        if (currentLevel === 2) { startLevel(3, true); return; }
+        if (currentLevel === 3) { endGame(); return; }
+    }
 
-    if (currentQIndex == 10 && currentLevel == 1) { showLevelIntro(); return; }
-    if (currentQIndex == 20 && currentLevel == 2) { showLevelIntro(); return; }
-    if (currentQIndex >= allQuestions.length) { endGame(); return; }
+    // Jika level berakhir normal (soal habis)
+    if (currentQIndex === 9 && currentLevel === 1) { 
+        currentQIndex++; 
+        startLevel(2, false); return; 
+    }
+    if (currentQIndex === 19 && currentLevel === 2) { 
+        currentQIndex++;
+        startLevel(3, false); return; 
+    }
+    if (currentQIndex >= allQuestions.length - 1) { 
+        endGame(); return; 
+    }
 
+    currentQIndex++;
     loadQuestion();
 }
 
@@ -533,6 +592,9 @@ function loadQuestion() {
     document.getElementById('question-text').innerText = q.text;
     
     document.getElementById('buzzer-container').style.display = 'flex';
+    document.getElementById('btn-buzzer-1').style.display = (teams[0].lives > 0) ? 'inline-block' : 'none';
+    document.getElementById('btn-buzzer-2').style.display = (teams[1].lives > 0) ? 'inline-block' : 'none';
+    
     let optGrid = document.getElementById('options-container');
     optGrid.style.display = 'grid';
     optGrid.classList.remove('active');
@@ -545,19 +607,35 @@ function loadQuestion() {
 
     currentPhase = "BUZZER";
     activeTeam = null;
-    document.getElementById('game-status').innerText = "SIAP-SIAP REBUTAN! (20 Detik)";
-    document.getElementById('game-status').style.background = "#ffe66d";
+    
+    let statText = "SIAP-SIAP REBUTAN! (20 Detik)";
+    if (teams[0].lives <= 0) statText = `${teams[1].name} BERMAIN SENDIRIAN! (20 Detik)`;
+    if (teams[1].lives <= 0) statText = `${teams[0].name} BERMAIN SENDIRIAN! (20 Detik)`;
+    
+    let statEl = document.getElementById('game-status');
+    statEl.innerText = statText;
+    statEl.style.background = "#ffe66d";
+    statEl.style.color = "#d35400";
     
     startTimer(TIME_BUZZER);
 }
 
-function hitBuzzer(teamId) {
+// Fungsi ketika bel ditekan
+function hitBuzzer(teamId, event) {
+    if(event) event.preventDefault(); // Cegah double trigger
+    
+    // JS akan mengunci press pertama yang masuk dan menolak yang kedua seketika
     if(currentPhase !== "BUZZER") return;
+    if(teams[teamId-1].lives <= 0) return; 
+    
+    // Langsung ganti fase agar lawan tidak bisa nge-bel lagi
+    currentPhase = "ANSWER";
+    
+    initAudio();
     SFX.buzzer();
     clearInterval(timerInterval);
     
     activeTeam = teamId;
-    currentPhase = "ANSWER";
     
     document.getElementById('buzzer-container').style.display = 'none';
     document.getElementById('options-container').classList.add('active');
@@ -610,16 +688,20 @@ function handleTimeout() {
     } else {
         overlayTitle = "WAKTU HABIS!";
         let tName = teams[activeTeam-1].name;
-        overlaySub = `${tName} kehabisan waktu! (-1 Nyawa)`;
         teams[activeTeam-1].lives--;
+        overlaySub = `${tName} kehabisan waktu! (-1 Nyawa)`;
+        
+        if(teams[activeTeam-1].lives <= 0) {
+            overlaySub += `<br><b style="color:#dc3545;">${tName} GUGUR DI LEVEL INI!</b>`;
+        }
     }
     
     showOverlay(overlayTitle, overlaySub, `Jawaban benar: ${q.options[q.answer].substring(3)}<br><br><span style='font-size:1.1rem;font-weight:normal;'>${q.explanation}</span>`, "#ff6b6b");
-    currentQIndex++;
 }
 
 function checkAnswer(selectedIndex) {
     if(currentPhase !== "ANSWER") return;
+    initAudio();
     clearInterval(timerInterval);
     document.getElementById('options-container').classList.remove('active'); 
     
@@ -645,11 +727,14 @@ function checkAnswer(selectedIndex) {
         title = "BELUM TEPAT!";
         sub = `Sayang sekali, ${tName} kehilangan 1 Nyawa.`;
         color = "#dc3545";
+        
+        if(teams[tIndex].lives <= 0) {
+            sub += `<br><b style="color:#dc3545;">${tName} GUGUR DI LEVEL INI!</b>`;
+        }
     }
 
     setTimeout(() => {
         showOverlay(title, sub, `Jawaban: ${q.options[q.answer].substring(3)}<br><br><span style='font-size:1.1rem;font-weight:normal;'>${q.explanation}</span>`, color);
-        currentQIndex++;
     }, 1500); 
 }
 
@@ -657,7 +742,7 @@ function showOverlay(title, subtitle, expl, color) {
     let ov = document.getElementById('overlay');
     document.getElementById('overlay-title').innerText = title;
     document.getElementById('overlay-title').style.color = color;
-    document.getElementById('overlay-subtitle').innerText = subtitle;
+    document.getElementById('overlay-subtitle').innerHTML = subtitle;
     document.getElementById('overlay-explanation').innerHTML = expl;
     ov.style.display = 'flex';
     updateHUD();
@@ -670,25 +755,19 @@ function endGame() {
     
     document.getElementById('final-name-t1').innerText = teams[0].name;
     document.getElementById('final-score-t1').innerText = teams[0].score;
-    document.getElementById('final-hearts-t1').innerText = getHearts(teams[0].lives);
     
     document.getElementById('final-name-t2').innerText = teams[1].name;
     document.getElementById('final-score-t2').innerText = teams[1].score;
-    document.getElementById('final-hearts-t2').innerText = getHearts(teams[1].lives);
     
     let winnerText = "";
-    if(teams[0].lives <= 0 && teams[1].lives <= 0) winnerText = "KEDUANYA GUGUR!";
-    else if(teams[0].lives <= 0) winnerText = `PEMENANG: ${teams[1].name}`;
-    else if(teams[1].lives <= 0) winnerText = `PEMENANG: ${teams[0].name}`;
-    else if(teams[0].score > teams[1].score) winnerText = `PEMENANG: ${teams[0].name}`;
+    if(teams[0].score > teams[1].score) winnerText = `PEMENANG: ${teams[0].name}`;
     else if(teams[1].score > teams[0].score) winnerText = `PEMENANG: ${teams[1].name}`;
     else winnerText = "HASIL IMBANG!";
     
     document.getElementById('winner-text').innerText = winnerText;
     
-    SFX.correct();
-    setTimeout(()=>SFX.correct(), 300);
-    setTimeout(()=>SFX.correct(), 600);
+    SFX.levelup();
+    setTimeout(()=>SFX.correct(), 500);
 }
 
 </script>
